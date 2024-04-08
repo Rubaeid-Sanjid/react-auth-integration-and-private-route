@@ -1,26 +1,36 @@
-
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Providers/AuthProvider";
 
-
 const Login = () => {
+  const { signInUser, googleSignIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const {signInUser} = useContext(AuthContext)
-    
-    const handleLogin = (e)=>{
-        e.preventDefault();
-        const email = e.target.email.value;
-        const password = e.target.password.value;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
-        signInUser(email, password)
-        .then(result => {
-          console.log(result.user);
-        })
-        .catch(error =>{
-          console.log(error.message);
-        })
-    }
+    signInUser(email, password)
+      .then((result) => {
+        console.log(result.user);
+        e.target.reset();
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+
+  const handleGoogleLogin = () => {
+    googleSignIn()
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col">
@@ -35,7 +45,7 @@ const Login = () => {
               </label>
               <input
                 type="email"
-                name= "email"
+                name="email"
                 placeholder="email"
                 className="input input-bordered"
                 required
@@ -63,11 +73,14 @@ const Login = () => {
             </div>
           </form>
           <h2 className="mb-5">
-            Don't have any account ?
+            Do not have any account ?
             <Link to={"/register"} className="ml-2 underline">
               Register
             </Link>{" "}
           </h2>
+          <button className="btn" onClick={handleGoogleLogin}>
+            Google
+          </button>
         </div>
       </div>
     </div>
